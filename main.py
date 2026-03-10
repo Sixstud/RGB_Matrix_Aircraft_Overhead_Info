@@ -38,9 +38,13 @@ while True:
 
             ]
 
-            img=display.render(lines,color)
+            img = display.render(lines,color)
 
-            scroll.scroll(img)
+# show aircraft info before scrolling
+display.matrix.SetImage(img,0,0)
+time.sleep(10)
+
+scroll.scroll(img)
 
     else:
 
