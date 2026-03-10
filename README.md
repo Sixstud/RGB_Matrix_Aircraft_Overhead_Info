@@ -45,3 +45,9 @@ cd flight-radar-matrix
 
 chmod +x install.sh
 ./install.sh
+
+if the RGB Matrix oes not work due to missing binding - eg module RGB Matrix cannot be found then rund this
+
+cd ~/rpi-rgb-led-matrix/bindings/python
+sudo pip3 install . --break-system-packages
+
