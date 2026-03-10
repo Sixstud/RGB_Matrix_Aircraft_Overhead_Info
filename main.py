@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import time
 import tracker
@@ -12,46 +12,48 @@ import airlines
 
 while True:
 
+    # adjust brightness depending on time
     display.brightness()
 
-    planes=tracker.aircraft()
+    # get nearby aircraft
+    planes = tracker.aircraft()
 
-    if len(planes)>0:
+    if planes:
 
-        for i in range(60):
-
+        # display radar sweep animation
+        for _ in range(60):
             radar.radar(planes)
-
             time.sleep(0.05)
 
+        # loop through each aircraft
         for p in planes:
 
-            airline=p["callsign"][:3]
+            airline = p["callsign"][:3]
+            color = airlines.AIRLINES.get(airline, (0, 255, 0))
 
-            color=airlines.AIRLINES.get(airline,(0,255,0))
-
-            lines=[
-
+            lines = [
                 p["callsign"],
                 f"{p['dist']}mi",
                 f"{p['alt']}ft"
-
             ]
 
-            img = display.render(lines,color)
+            # render image
+            img = display.render(lines, color)
 
-# show aircraft info before scrolling
-display.matrix.SetImage(img,0,0)
-time.sleep(10)
+            # display aircraft info on screen for 10 seconds
+            display.matrix.SetImage(img, 0, 0)
+            time.sleep(10)
 
-scroll.scroll(img)
+            # then scroll it across the screen
+            scroll.scroll(img)
 
     else:
+        # no aircraft nearby: show weather info
+        lines = weather.weather()
+        img = display.render(lines, (0, 200, 255))
 
-        lines=weather.weather()
-
-        img=display.render(lines,(0,200,255))
+        # hold on screen for a few seconds before scrolling
+        display.matrix.SetImage(img, 0, 0)
+        time.sleep(5)
 
         scroll.scroll(img)
-
-        time.sleep(5)
